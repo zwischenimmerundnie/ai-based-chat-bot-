@@ -1,13 +1,17 @@
-import os
-import sys
-import jwt
-import telebot
-from telebot import types
+"""Этот код представляет собой скелет Python-приложения, использующего 
+библиотеку telebot для создания бота Telegram, который взаимодействует с Yandex LLM, OpenSearch и Yandex Translator"""
 
-from opensearchpy import OpenSearch
+
+import os #Модуль для работы с операционной системой
+import sys #Модуль для работы с интерпретатором Python.
+import jwt #Модуль для работы с JSON Web Tokens (JWT).
+import telebot #Библиотека для создания ботов Telegram.
+from telebot import types # Модуль из telebot для работы с типами данных Telegram.
+
+from opensearchpy import OpenSearch #Модуль для работы с OpenSearch, инструментом поиска.
 
 # set src directory as default
-sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath('.')) #Добавляет текущий каталог в путь поиска модулей, чтобы приложение могло найти модули из app_rag.
 
 from app_rag.rag_view_message_handler import MessageHandler
 
@@ -18,7 +22,7 @@ from app_rag.rag_model_opensearch import OpenSearchDB
 from app_rag.rag_model_translate import YandexTranslator
 from app_rag.rag_presenter_app_bot import BotPresenter
 
-def init_yandex_llm():
+def init_yandex_llm(): #инициализирует ЛЛМ 
     api_key = Config.get_api_key()
     directory = Config.get_directory_id()
     yandex_llm = YandexLLM(api_key = api_key, folder_id=directory)
@@ -50,7 +54,7 @@ def init_tele_bot(presenter):
     return bot_view_rag
 
 
-def init_app_components():
+def init_app_components(): #Эта функция последовательно вызывает функции инициализации, чтобы создать все необходимые компоненты приложения. 
     yandex_llm = init_yandex_llm()
     database = init_opensearch_database()
     translator = init_translator()
@@ -59,6 +63,14 @@ def init_app_components():
     bot_view_rag = init_tele_bot(presenter)
 
     return bot_view_rag
+
+#как это работает? 
+
+"""Когда пользователь отправляет сообщение боту в Telegram, обработчик сообщений MessageHandler получает это сообщение,
+передает его презентеру BotPresenter, который обрабатывает запрос, используя языковую модель Yandex LLM, OpenSearch и переводчик,
+а затем возвращает ответ, который отображается в Telegram с помощью BotView."""
+
+
 
 
 if __name__ == '__main__':
